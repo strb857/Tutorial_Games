@@ -11,6 +11,7 @@ while chapter:
   7. Tic Tac Toe
   8. Master Mind
   9. Ubåtsjakt
+  10. Chiffer
   x. Exit
         ''')
   
@@ -69,6 +70,12 @@ while chapter:
     print('Running Kap_13_Sonar')
     print()
     from Kap_13_Sonar import Run
+    Run()
+    print()
+  elif chapter == '10':
+    print('Running Kap_14_Cipher')
+    print()
+    from Kap_14_Cipher import Run
     Run()
     print()
   elif chapter == 'x':
