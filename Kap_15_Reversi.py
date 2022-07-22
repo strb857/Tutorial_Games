@@ -79,14 +79,14 @@ def getValidMoves(board, tile):
 def getScoreOfBoard(board):
     #Determine the score by counting the tiles. Return a Dictionary with keys 'X' and 'O'
     xscore = 0
-    yscore = 0
+    oscore = 0
     for x in range(WIDTH):
         for y in range(HEIGHT):
             if board[x][y] == 'X':
                 xscore += 1
-            if board[x][y] == 'Y':
-                yscore += 1
-    return {'X':xscore, 'Y':yscore}
+            if board[x][y] == 'O':
+                oscore += 1
+    return {'X':xscore, 'O':oscore}
 
 def enterPlayerTile():
     #Let player enter which tile they want to play
@@ -127,7 +127,7 @@ def getBoardCopy(board):
     boardCopy = getNewBoard()
 
     for x in range(WIDTH):
-        for y in (HEIGHT):
+        for y in range(HEIGHT):
             boardCopy[x][y] = board[x][y]
 
     return boardCopy
@@ -139,7 +139,7 @@ def isOnCorner(x, y):
 def getplayerMove(board, playerTile):
     # Let player enter move
     # Return the move as [x, y] (or return the strings 'hints' or 'quit')
-    DIGITS1TO8 = '1, 2, 3, 4, 5, 6, 7, 8'.split()
+    DIGITS1TO8 = '1 2 3 4 5 6 7 8'.split()
     while True:
         print('Skriv in ditt drag, "avbryt" för att avsluta, eller "tips" för ledtråd om bästa drag.')
         move = input().lower()
@@ -214,7 +214,7 @@ def playGame(playerTile, computerTile):
                 printScore(board, playerTile, computerTile)
 
                 move = getplayerMove(board, playerTile)
-                if move == 'avsluta':
+                if move == 'avbryt':
                     print('Tack för att du spelat.')
                     sys.exit()
                 elif move == 'tips':
@@ -236,7 +236,7 @@ def playGame(playerTile, computerTile):
 
 
 
-print('Välkommen till Reversi')
+print('Välkommen till Othello')
 
 playerTile, computerTile = enterPlayerTile()
 
