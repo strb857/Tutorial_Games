@@ -159,7 +159,7 @@ def getplayerMove(board, playerTile):
 
     return [x, y]
 
-def getComputerMove(board, computerTile):
+def getCornerBestMove(board, computerTile):
     # Given the board and computers tile, determine where to
     # move and Return that move as an [x, y] list.
     possibleMoves = getValidMoves(board, computerTile)
@@ -180,6 +180,47 @@ def getComputerMove(board, computerTile):
             bestMove = [x, y]
             bestScore = score
     return bestMove
+
+def getWorstMove(board, tile):
+    #Return the move that flips the least number of tiles
+    possibleMoves = getValidMoves(board, tile)
+    random.shuffle(possibleMoves) #Randomize the order of moves
+
+    #Find the lowest-scoring move possible.
+    worstScore = 64
+    for x, y in possibleMoves:
+        boardCopy = getBoardCopy(board)
+        makeMove(boardCopy, tile, x, y)
+        score = getScoreOfBoard(boardCopy)[tile]
+        if score < worstScore:
+            worstMove = [x, y]
+            worstScore = score
+
+    return worstMove
+
+def getRandomMove(board, tile):
+    possibleMoves = getValidMoves(board, tile)
+    return random.choice(possibleMoves)
+
+def isOnSide(x, y):
+    return x == 0 or x == WIDTH - 1 or y == 0 or y == HEIGHT - 1
+
+def getCornerSideBestMove(board, tile):
+    #Return a corner, side or best move
+    possibleMoves = getValidMoves(board, tile)
+    random.shuffle(possibleMoves) #Randomize the order of the moves
+
+    #Always go for corner if possible
+    for x, y in possibleMoves:
+        if isOnCorner(x, y):
+            return [x, y]
+
+    #If there is no corner, choose a side move.
+    for x, y in possibleMoves:
+        if isOnSide(x, y):
+            return [x, y]
+
+    return getCornerBestMove(board, tile) #Do what the normal AI does
 
 def printScore(board, playerTile, computerTile):
     scores = getScoreOfBoard(board)
@@ -213,7 +254,7 @@ def playGame(playerTile, computerTile):
                 #     drawBoard(board)
                 # printScore(board, playerTile, computerTile)
 
-                move = getComputerMove(board, playerTile)
+                move = getCornerBestMove(board, playerTile)
                 # if move == 'avbryt':
                 #     print('Tack för att du spelat.')
                 #     sys.exit()
@@ -230,30 +271,34 @@ def playGame(playerTile, computerTile):
                 # printScore(board, playerTile, computerTile)
 
                 # input('Tryck enter för att se datorns drag.')
-                move = getComputerMove(board, computerTile)
+                move = getCornerSideBestMove(board, computerTile)
                 makeMove(board, computerTile, move[0], move[1])
             turn = 'player'
 
-
-
+NUM_GAMES = 1000
+xWins = oWins = ties = 0
 print('Välkommen till Othello')
 
 playerTile, computerTile = ['X', 'O'] #enterPlayerTile()
 
-while True:
+for i in range(NUM_GAMES): #while True:
     finalBoard = playGame(playerTile, computerTile)
 
     #Display the final score
-    drawBoard(finalBoard)
+    # drawBoard(finalBoard)
     scores = getScoreOfBoard(finalBoard)
-    print('X tog %s poäng och O tog %s poäng' % (scores['X'], scores['O']))
+    print('#%s: X tog %s poäng och O tog %s poäng' % (i + 1, scores['X'], scores['O']))
     if scores[playerTile] > scores[computerTile]:
-        print('Du slog datorn med %s poäng. Grattis!' % (scores[playerTile] - scores[computerTile]))
+        xWins += 1 #print('Du slog datorn med %s poäng. Grattis!' % (scores[playerTile] - scores[computerTile]))
     elif scores[playerTile] < scores[computerTile]:
-        print('Datron besegrade dig med %s poäng. Bättre lycka nästa gång.' % (scores[computerTile] - scores[playerTile]))
+        oWins += 1 #print('Datron besegrade dig med %s poäng. Bättre lycka nästa gång.' % (scores[computerTile] - scores[playerTile]))
     else:
-        print('Matchen slutade oavgjort!')
+        ties += 1 #print('Matchen slutade oavgjort!')
 
-    print('Vill du spela igen? J/N')
-    if not input().lower().startswith('j'):
-        break
+    # print('Vill du spela igen? J/N')
+    # if not input().lower().startswith('j'):
+    #     break
+
+    print('X wins: %s (%s%%)' % (xWins, round(xWins / NUM_GAMES * 100, 1)))
+    print('O wins: %s (%s%%)' % (oWins, round(oWins / NUM_GAMES * 100, 1)))
+    print('Ties: %s (%s%%)' % (ties, round(ties / NUM_GAMES * 100, 1)))

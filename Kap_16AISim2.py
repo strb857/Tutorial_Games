@@ -234,26 +234,30 @@ def playGame(playerTile, computerTile):
                 makeMove(board, computerTile, move[0], move[1])
             turn = 'player'
 
-
-
+NUM_GAMES = 250
+xWins = oWins = ties = 0
 print('Välkommen till Othello')
 
 playerTile, computerTile = ['X', 'O'] #enterPlayerTile()
 
-while True:
+for i in range(NUM_GAMES): #while True:
     finalBoard = playGame(playerTile, computerTile)
 
     #Display the final score
-    drawBoard(finalBoard)
+    # drawBoard(finalBoard)
     scores = getScoreOfBoard(finalBoard)
-    print('X tog %s poäng och O tog %s poäng' % (scores['X'], scores['O']))
+    print('#%s: X tog %s poäng och O tog %s poäng' % (i + 1, scores['X'], scores['O']))
     if scores[playerTile] > scores[computerTile]:
-        print('Du slog datorn med %s poäng. Grattis!' % (scores[playerTile] - scores[computerTile]))
+        xWins += 1 #print('Du slog datorn med %s poäng. Grattis!' % (scores[playerTile] - scores[computerTile]))
     elif scores[playerTile] < scores[computerTile]:
-        print('Datron besegrade dig med %s poäng. Bättre lycka nästa gång.' % (scores[computerTile] - scores[playerTile]))
+        oWins += 1 #print('Datron besegrade dig med %s poäng. Bättre lycka nästa gång.' % (scores[computerTile] - scores[playerTile]))
     else:
-        print('Matchen slutade oavgjort!')
+        ties += 1 #print('Matchen slutade oavgjort!')
 
-    print('Vill du spela igen? J/N')
-    if not input().lower().startswith('j'):
-        break
+    # print('Vill du spela igen? J/N')
+    # if not input().lower().startswith('j'):
+    #     break
+
+    print('X wins: %s (%s%%)' % (xWins, round(xWins / NUM_GAMES * 100, 1)))
+    print('O wins: %s (%s%%)' % (oWins, round(oWins / NUM_GAMES * 100, 1)))
+    print('Ties: %s (%s%%)' % (ties, round(ties / NUM_GAMES * 100, 1)))
